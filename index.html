@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>music player</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+     crossorigin="anonymous" referrerpolicy="no-referrer"/>
+     <link rel="stylesheet" href="style.css">
+     <!-- <script defexr src="script.js"></script> -->
+</head>
+<body>
+   <div class="mainDiv">
+    <div class="music_container">
+        <h2>Lovely💖music</h2>
+        <h3>The Loneliness</h3>
+        
+        <div class="img_container">
+        <img src="images/kumar1.jpg" alt="here image">
+    </div>
+    
+    <audio src="music/sonu1.mp3">play</audio>
+    <div class="progress_container">
+        <div class="meter_duration">
+            <div class="start_time">00:00 </div>
+            <div class="final_time">00:00</div>
+        </div>
+    <div class="progress_baar">
+        <div class="progress"></div>
+    </div>
+</div>
+    
+    <!-- control -->
+    <div class="control">
+        <!-- <i class="fa-solid fa-repeat" id="repeat">
+          <span></span> -->
+        </i>
+        <i class="fa-solid fa-backward" id="previous"></i>
+        <i class="fa-solid fa-play" id="play"></i>
+        <i class="fa-solid fa-forward" id="next"></i>
+        <!-- <i class="fa-solid fa-list" id="list"></i> -->
+    </div>
+  </div>
+   </div>
+   <script>
+
+const songs = [
+  {
+      name: "sonu1",
+      image:"kumar1",
+      title:"love",
+  },
+  {
+      name: "sonu2",
+      image:"kumar2",
+      title:"remix",
+  },
+  {
+      name: "sonu3",
+      image:"kumar3",
+      title:"breakUp",
+  },
+  {
+      name: "sonu4",
+      image:"kumar4",
+      title:"lonelyness",
+  },
+  {
+      name: "sonu5",       
+      image:"kumar5",
+      title:"apne to apne",
+      
+  },
+  {
+      name: "sonu6",       
+      image:"kumar6",
+      title:"self believe",
+      
+  }
+];
+
+  const plays = document.getElementById('play');
+  const music = document.querySelector('audio');
+  const image = document.querySelector('.img_container img');
+  const title = document.querySelector('h3');
+  const prevSong = document.getElementById('previous');
+  const next = document.getElementById('next');
+  const pregress = document.querySelector('.progress');
+  const progress_div = document.querySelector('.progress_baar');
+  let startTime = document.querySelector('.start_time');
+  let finalTime = document.querySelector('.final_time');
+  let isPlaying = false;
+//   function for play song
+  const playMusic = () =>{
+    music.play();
+    isPlaying = true;
+    image.classList.add('aNine');
+    plays.classList.replace("fa-play" , "fa-pause");
+  }
+// function for pause song
+const pauseMusic = () =>{
+    music.pause();
+    isPlaying = false;
+    image.classList.remove('aNine');
+    plays.classList.replace("fa-pause","fa-play");
+  }
+
+  plays.addEventListener('click', () =>{
+    if(isPlaying){
+        pauseMusic();
+    }else{
+         playMusic();
+    }
+  });
+
+  const loadSong = (songs) =>{
+    title.textContent = songs.title;
+  music.src = "music/" + songs.name + ".mp3";
+   image.src = "images/" + songs.image + ".jpg"
+  }
+ 
+  
+  let songIndex = 0;
+  const nextSong = () =>{
+    songIndex = (songIndex + 1) % songs.length;
+    loadSong(songs[songIndex]);
+    playMusic(); 
+   
+  }
+  const previousSong = () =>{
+    songIndex = (songIndex - 1 + songs.length)% songs.length;
+    loadSong(songs[songIndex]);
+    playMusic(); 
+  }
+
+  music.addEventListener('timeupdate', (e)=>{
+  const {currentTime, duration} = e.srcElement; 
+  let pregressTime = currentTime/duration * 100;
+  pregress.style.width = `${pregressTime}%`;
+
+  // updating duration of song
+  
+  let final_min = Math.floor(duration/60);
+  if(final_min < 10){
+    final_min = `0${final_min}`
+  }
+  let final_sec = Math.floor(duration%60);
+  if(final_sec < 10){
+    final_sec = `0${final_sec}`
+  }
+  if(duration){
+    finalTime.innerText = `${final_min} : ${final_sec}`;
+  }
+//  updating currentTime
+  let cur_min = Math.floor(currentTime/60);
+  if(cur_min < 10){
+    cur_min = `0${cur_min}`
+  }
+  let cur_sec = Math.floor(currentTime%60);
+  if(cur_sec < 10){
+    cur_sec = `0${cur_sec}`
+  }
+  if(duration){ 
+    startTime.innerText = `${cur_min} : ${cur_sec}`;
+  }
+  })
+
+  progress_div.addEventListener('click', (event)=>{
+    // const {duration} = music;
+    const duration = music.duration
+    let pregress_move = (event.offsetX/event.srcElement.clientWidth) * duration;
+   music.currentTime = pregress_move;
+  })
+  music.addEventListener('ended', nextSong)
+  next.addEventListener('click', nextSong);
+  prevSong.addEventListener('click', previousSong);
+   </script> 
+</body>
+</html> 
